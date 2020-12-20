@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_drawer"
+    app:startDestination="@id/taskFragment">
+
+    <fragment
+        android:id="@+id/taskFragment"
+        android:name="com.pora.repairapp.TaskFragment"
+        android:label="Opravila"
+        tools:layout="@layout/fragment_task" >
+        <action
+            android:id="@+id/action_taskFragment_to_workerFragment"
+            app:destination="@id/workerFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_taskFragment_to_addTaskFragment"
+            app:destination="@id/addTaskFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/workerFragment"
+        android:name="com.pora.repairapp.WorkerFragment"
+        android:label="Serviserji"
+        tools:layout="@layout/fragment_worker" >
+        <action
+            android:id="@+id/action_workerFragment_to_taskFragment"
+            app:destination="@id/taskFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_workerFragment_to_addWorkerFragment"
+            app:destination="@id/addWorkerFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_workerFragment_to_workerInfoFragment"
+            app:destination="@id/workerInfoFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/addWorkerFragment"
+        android:name="com.pora.repairapp.addWorkerFragment"
+        android:label="Dodaj serviserja"
+        tools:layout="@layout/fragment_add_worker">
+        <action
+            android:id="@+id/action_addWorkerFragment_to_workerFragment"
+            app:destination="@id/workerFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/addTaskFragment"
+        android:name="com.pora.repairapp.addTaskFragment"
+        android:label="fragment_add_task"
+        tools:layout="@layout/fragment_add_task" >
+        <action
+            android:id="@+id/action_addTaskFragment_to_taskFragment"
+            app:destination="@id/taskFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/workerInfoFragment"
+        android:name="com.pora.repairapp.WorkerInfoFragment"
+        android:label="Informacije o zaposlenem"
+        tools:layout="@layout/fragment_worker_info" >
+        <action
+            android:id="@+id/action_workerInfoFragment_to_workerFragment"
+            app:destination="@id/workerFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <argument
+            android:name="phone_number"
+            app:argType="string" />
+    </fragment>
+</navigation>

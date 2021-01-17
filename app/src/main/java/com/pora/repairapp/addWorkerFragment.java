@@ -1,7 +1,10 @@
 package com.pora.repairapp;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -89,13 +92,15 @@ public class addWorkerFragment extends Fragment implements AdapterView.OnItemSel
                     password = colors[rand1] + furniture[rand2] + rand3;
 
                     if (selectedItem.equals("Vodja")) {
-                        Repairman repairman = new Repairman(rFirstName, rLastName, rEmail, rPhoneNumber, rUsername, password, JobStatus.ADMIN);
+                        Repairman repairman = new Repairman(rFirstName, rLastName, rEmail, rPhoneNumber, rUsername, rUsername+"123", JobStatus.ADMIN);
                         app.addToRList(repairman);
+                        app.saveWorkersData();
                     } else {
-                        Repairman repairman = new Repairman(rFirstName, rLastName, rEmail, rPhoneNumber, rUsername, password, JobStatus.NORMAL);
+                        Repairman repairman = new Repairman(rFirstName, rLastName, rEmail, rPhoneNumber, rUsername, rUsername+"123", JobStatus.NORMAL);
                         app.addToRList(repairman);
+                        app.saveWorkersData();
                     }
-                    Toast.makeText(getActivity(), "Prosimo izpolnite vsa polja", Toast.LENGTH_SHORT).show();
+                    createNotification(app.myID++, R.drawable.ic_baseline_build_24, "Dodan nov uporabnik!", rFirstName + " " + rLastName, ApplicationActivity.CHANNEL_ID);
                     Navigation.findNavController(view).navigate(R.id.action_addWorkerFragment_to_workerFragment);
                 }
 
@@ -117,5 +122,14 @@ public class addWorkerFragment extends Fragment implements AdapterView.OnItemSel
 
     private void initData() {
         app = (ApplicationActivity) getActivity().getApplication();
+    }
+
+    private void createNotification(int nId, int iconRes, String title, String body, String channelId) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+                getActivity(), channelId).setSmallIcon(iconRes)
+                .setContentTitle(title).setContentText(body);
+        NotificationManager mNotificationManager =
+                (NotificationManager) app.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(nId, mBuilder.build());
     }
 }

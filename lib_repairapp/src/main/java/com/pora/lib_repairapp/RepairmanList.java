@@ -59,4 +59,8 @@ public class RepairmanList implements Sizable {
     public ArrayList<Repairman> getRepairmen() {
         return repairmen;
     }
+
+    public void remove(int position) {
+        repairmen.remove(position);
+    }
 }

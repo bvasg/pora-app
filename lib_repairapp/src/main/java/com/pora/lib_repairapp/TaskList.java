@@ -28,4 +28,8 @@ public class TaskList implements Sizable {
     public Task getTaskByPosition(int position) {
         return tasks.get(position);
     }
+
+    public void remove(int position) {
+        tasks.remove(position);
+    }
 }

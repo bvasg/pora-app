@@ -20,6 +20,9 @@
             app:destination="@id/addTaskFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_taskFragment_to_taskInfoFragment"
+            app:destination="@id/taskInfoFragment" />
     </fragment>
 
     <fragment
@@ -66,15 +69,22 @@
     <fragment
         android:id="@+id/workerInfoFragment"
         android:name="com.pora.repairapp.WorkerInfoFragment"
-        android:label="Informacije o zaposlenem"
+        android:label="fragment_worker_info"
         tools:layout="@layout/fragment_worker_info" >
         <action
             android:id="@+id/action_workerInfoFragment_to_workerFragment"
-            app:destination="@id/workerFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+            app:destination="@id/workerFragment" />
         <argument
-            android:name="phone_number"
-            app:argType="string" />
+            android:name="argSelectedPosition"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/taskInfoFragment"
+        android:name="com.pora.repairapp.TaskInfoFragment"
+        android:label="fragment_task_info"
+        tools:layout="@layout/fragment_task_info" >
+        <action
+            android:id="@+id/action_taskInfoFragment_to_taskFragment"
+            app:destination="@id/taskFragment" />
     </fragment>
 </navigation>

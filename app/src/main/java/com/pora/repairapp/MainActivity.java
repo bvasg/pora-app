@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initData();
 
         username = findViewById(R.id.login_username);
         password = findViewById(R.id.login_password);
@@ -68,14 +70,15 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-        initData();
     }
 
     private boolean validate(String username, String password) {
 
         RepairmanList repairmanList = app.getrList();
         Repairman man = repairmanList.getRepairman(username);
+
+        Log.i("ERROR", app.getrList().toString());
+
 
         if(man.getUsername().toLowerCase().equals(username.toLowerCase()) && man.getPassword().equals(password)) {
             app.setRepairman(man);

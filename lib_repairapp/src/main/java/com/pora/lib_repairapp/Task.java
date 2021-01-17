@@ -70,4 +70,8 @@ public class Task {
     public void setProgress(int progress) {
         this.progress = progress;
     }
+
+    public Urgency getUrgency() {
+        return urgency;
+    }
 }

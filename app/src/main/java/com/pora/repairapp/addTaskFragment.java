@@ -1,15 +1,19 @@
 package com.pora.repairapp;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -27,7 +31,7 @@ import java.time.format.DateTimeFormatter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Locale;
+import java.util.Calendar;
 
 
 public class addTaskFragment extends Fragment implements AdapterView.OnItemSelectedListener {
@@ -37,29 +41,37 @@ public class addTaskFragment extends Fragment implements AdapterView.OnItemSelec
     SeekBar seekBar;
     RadioGroup radioGroup;
     RadioButton radioButton;
-    EditText dueDate;
+    TextView dueDate;
     Button button;
     Spinner spinner;
     private String selectedRepairam;
     int progress;
+    EditText title;
+
+    Button pickButton;
+    Calendar calendar;
+    DatePickerDialog datePickerDialog;
 
     private ApplicationActivity app;
+    View itemView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         initData();
-        View view = inflater.inflate(R.layout.fragment_add_task, container, false);
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.US);
+        itemView = inflater.inflate(R.layout.fragment_add_task, container, false);
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 
-        radioGroup = view.findViewById(R.id.radio_group);
-        button = view.findViewById(R.id.button_add_new_task);
-        progressTextView = (TextView) view.findViewById(R.id.text_view_progress);
-        seekBar = (SeekBar) view.findViewById(R.id.seekBar);
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        dueDate = (EditText) view.findViewById(R.id.task_duedate);
-        spinner = (Spinner) view.findViewById(R.id.spinner_list_of_workers);
+        radioGroup = itemView.findViewById(R.id.radio_group);
+        button = itemView.findViewById(R.id.button_add_new_task);
+        progressTextView = (TextView) itemView.findViewById(R.id.infoTextProgress);
+        seekBar = (SeekBar) itemView.findViewById(R.id.infoSeekBar);
+        progressBar = (ProgressBar) itemView.findViewById(R.id.infoProgressBar);
+        dueDate = (TextView) itemView.findViewById(R.id.task_duedate);
+        spinner = (Spinner) itemView.findViewById(R.id.spinner_list_of_workers);
+        pickButton = (Button) itemView.findViewById(R.id.pickDate);
+        title = (EditText) itemView.findViewById(R.id.task_title);
 
         ArrayList<String> arrayList= new ArrayList<String>();
         RepairmanList rList = app.getrList();
@@ -67,8 +79,27 @@ public class addTaskFragment extends Fragment implements AdapterView.OnItemSelec
             arrayList.add(rList.getRepairmanByPosition(i).getFirstName() + " " + rList.getRepairmanByPosition(i).getLastName());
         }
 
+        pickButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calendar = Calendar.getInstance();
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
+
+                datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int mYear, int mMonth, int mDay) {
+                        dueDate.setText(mDay + "/" + (mMonth+1) + "/" + mYear);
+                    }
+                }, day, month, year);
+                datePickerDialog.show();
+            }
+        });
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, arrayList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(this);
@@ -96,39 +127,56 @@ public class addTaskFragment extends Fragment implements AdapterView.OnItemSelec
 
             @Override
             public void onClick(View view) {
-                String title = progressTextView.getText().toString();
-                LocalDate ddate = LocalDate.parse(dueDate.getText().toString());
+                LocalDate ddate = LocalDate.parse(dueDate.getText().toString(), formatter);
 
                 String x = LocalDate.now().toString();
                 LocalDate sdate = LocalDate.parse(x);
 
                 int radioId = radioGroup.getCheckedRadioButtonId();
-                radioButton = view.findViewById(radioId);
+                radioButton = itemView.findViewById(radioId);
 
-                if(!title.isEmpty() || selectedRepairam.isEmpty()) {
+                if(title.getText().toString().matches("") || selectedRepairam.isEmpty()) {
                     Toast.makeText(getActivity(), "Izpolnite obvezna polja", Toast.LENGTH_SHORT).show();
                 } else {
-                    if(radioButton.getText() == "Normalno") {
-                        Task task = new Task(title, ddate, sdate, selectedRepairam, Urgency.LOW, progress);
+                    Toast.makeText(getActivity(), "Dodano novo opravilo", Toast.LENGTH_SHORT).show();
+                    if(radioButton.getText().toString().equals("Normalno")) {
+                        Log.i("Test", "Normalno");
+                        Task task = new Task(title.getText().toString(), ddate, sdate, selectedRepairam, Urgency.LOW, progress);
                         app.addToTList(task);
-                    } else if(radioButton.getText() == "Nujno") {
-                        Task task = new Task(title, ddate, sdate, selectedRepairam, Urgency.MEDIUM, progress);
+                        app.saveTasksData();
+                    } else if(radioButton.getText().equals("Nujno")) {
+                        Log.i("Test", "Nujno");
+                        Task task = new Task(title.getText().toString(), ddate, sdate, selectedRepairam, Urgency.MEDIUM, progress);
                         app.addToTList(task);
-                    } else if(radioButton.getText() == "Zelo nujno") {
-                        Task task = new Task(title, ddate, sdate, selectedRepairam, Urgency.HIGH, progress);
+                        app.saveTasksData();
+                    } else if(radioButton.getText().equals("Zelo nujno")) {
+                        Log.i("Test", "Zelo nujno");
+                        Task task = new Task(title.getText().toString(), ddate, sdate, selectedRepairam, Urgency.HIGH, progress);
                         app.addToTList(task);
+                        app.saveTasksData();
                     }
+
                 }
+                Log.i("Test", title.getText().toString());
+                Log.i("Test", ddate.toString());
+                Log.i("Test", sdate.toString());
+                Log.i("Test", selectedRepairam);
+                Log.i("Test", String.valueOf(progress));
+                Log.i("Test", radioButton.getText().toString());
+
+                Navigation.findNavController(view).navigate(R.id.action_addTaskFragment_to_taskFragment);
+
             }
         });
 
-        return view;
+        return itemView;
     }
 
-    public void checkButton(View view) {
+
+    /*public void checkButton(View view) {
         int radioId = radioGroup.getCheckedRadioButtonId();
         radioButton = view.findViewById(radioId);
-    }
+    }*/
 
     private void initData() {
         app = (ApplicationActivity) getActivity().getApplication();
